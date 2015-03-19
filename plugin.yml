@@ -2,3 +2,8 @@ main: com.gmail.shellljx.CustomJob.CustomJob
 name: CustomJob
 version: 1.0.0
 author: shell
+commands:
+  custom:
+    description: the basic command
+  cadmin:
+    description: the admin command
