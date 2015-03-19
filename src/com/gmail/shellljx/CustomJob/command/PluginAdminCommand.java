@@ -29,24 +29,16 @@ public class PluginAdminCommand implements CommandExecutor {
 			Player player = (Player) sender;
 			RPGItems rpgItems = new RPGItems();
 			ItemStack item = player.getItemInHand();
-			//构造装备名称
-			int size = plugin.getItems("setting."+args[1]).size();
-			StringBuilder builder = new StringBuilder("item");
-			builder.append(size+1);
 			//判断手里的物品是不是RPGItem
 			if(rpgItems.toRPGItem(item) instanceof RPGItem){
 				int id = rpgItems.toRPGItem(item).getID();
-				if(!plugin.getItems("setting."+args[1]).contains(id)){
-					System.out.println("setting."+args[1]+builder.toString());
-					plugin.getConfigUtil().createItem("setting."+args[1]+"."+builder.toString(), id);
-					plugin.getItems("setting."+args[1]).add(id);
-					plugin.getItemIds("setting."+args[1]).add(builder.toString());
-					player.sendMessage(ChatColor.GREEN+"[CustomJob]成功添加一件RPG武器到"+ChatColor.YELLOW+plugin.getConfig().getString("setting.nick."+args[1])+ChatColor.GREEN+"职业，现在共有"+ChatColor.YELLOW+(size+1)+ChatColor.GREEN+"件装备.");
+					System.out.println("setting."+args[1]+"-"+id);
+					if(plugin.createItem("setting."+args[1], id)){
+						player.sendMessage(ChatColor.GREEN+"[CustomJob]成功添加一件RPG武器到"+ChatColor.YELLOW+plugin.getConfig().getString("nick."+args[1])+ChatColor.GREEN+"职业，现在共有"+ChatColor.YELLOW+plugin.getitems("setting."+args[1]).size()+ChatColor.GREEN+"件装备.");	
+					}else{
+						player.sendMessage(ChatColor.RED+"[CustomJob]该职业已经添加了这个武器，无需再次添加！");
+					}
 					return true;
-				}else{
-					player.sendMessage(ChatColor.GREEN+"[CustomJob]该物品已经在这个职业中了，不需要再添加!");
-					return true;
-				}
 			}else{
 				player.sendMessage(ChatColor.RED+"[CustomJob]手里请拿着RPGItem的自定义武器才可以执行这个命令!");
 				return true;
@@ -59,31 +51,13 @@ public class PluginAdminCommand implements CommandExecutor {
 			ItemStack item = player.getItemInHand();
 			if(rpgItems.toRPGItem(item) instanceof RPGItem){
 				int id = rpgItems.toRPGItem(item).getID();
-				if(plugin.getItems("setting."+args[1]).contains(id)){
-					System.out.println("。。。。。。。。。。。。。。");
-					plugin.getConfigUtil().removNode("setting."+args[1]+"."+plugin.getItemKey("setting."+args[1], id));
-					System.out.println("--------------------");
-					plugin.getItems("setting."+args[1]).remove(new Integer(id));
-					plugin.getItemIds("setting."+args[1]).remove("setting."+args[1]+"."+plugin.getItemKey("setting."+args[1], id));
-					System.out.println("********************");
-					player.sendMessage(ChatColor.GREEN+"[CustomJob]成功移除该RPG装备，该职业还有"+plugin.getItems("setting."+args[1]).size()+"件RPG装备");
+					if(plugin.removeItem("setting."+args[1],id)){
+						player.sendMessage(ChatColor.GREEN+"[CustomJob]成功移除该RPG装备，该职业还有"+plugin.getitems("setting."+args[1]).size()+"件RPG装备");
+					}else{
+						player.sendMessage(ChatColor.RED+"[CustomJob]该职业还没有添加这个武器装备，所以无法移除!");
+					}
 					return true;
-				}else{
-					player.sendMessage(ChatColor.RED+"[CustomJob]该职业没有这件武器装备!");
-					return true;
-				}
 			}
-		}
-		if(args[1].equalsIgnoreCase("haha")){
-			System.out.println("执行");
-			plugin.instance.getConfig().set("setting.nick.job-1",null);
-			plugin.instance.saveConfig();
-			return true;
-		}
-		if(args[1].equalsIgnoreCase("ai")){
-			plugin.instance.getConfig().set("setting.nick.job-1", "法师");
-			plugin.instance.saveConfig();
-			return true;
 		}
 		return false;
 	}
