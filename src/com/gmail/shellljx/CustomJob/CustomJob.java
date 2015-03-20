@@ -63,6 +63,7 @@ public class CustomJob extends JavaPlugin {
 		return jobMap.get(job);
 	}
 	
+	
 	public boolean createItem(String job,int id){
 		System.out.println(jobMap.get("setting.job-1").size());
 		if(!jobMap.get(job).contains(id)){
@@ -84,18 +85,64 @@ public class CustomJob extends JavaPlugin {
 	
 	public boolean isJobItem(int id){
 		for(String key:jobMap.keySet()){
-			if(jobMap.get(key).contains(id))
+			if(jobMap.get(key).contains(id)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean isJob(String job_name){
+		for(String key:jobMap.keySet()){
+			if(key.equalsIgnoreCase("setting."+job_name))
 				return true;
 		}
 		return false;
 	}
 	
+	public boolean include(String old_job,ItemStack item){
+		int item_id = item.getTypeId();
+		if(jobMap.get("setting."+old_job).contains(item_id))
+			return true;
+		return false;
+	}
+	
+	
 	public FileConfiguration getPlayerConfig(){
 		return this.playerConfig;
 	}
+	
+	public void playerConfigReload(){
+		this.pf.reloadPlayerConfig();
+		this.playerConfig = pf.getPlayerConfig();
+	}
+	
+	public void playerConfigSave(){
+		this.pf.savePlayerConfig();
+		this.playerConfig = pf.getPlayerConfig();
+	}
+	
+	public void joinAJob(String path,String job_name){
+		playerConfig.addDefault(path, job_name);
+		playerConfig.options().copyDefaults(true);
+		pf.savePlayerConfig();
+		playerConfig = pf.getPlayerConfig();
+	}
+	
+	public void transJob(String path,String job_name){
+		playerConfig.set(path, job_name);
+		playerConfig.options().copyDefaults(true);
+		pf.savePlayerConfig();
+		playerConfig = pf.getPlayerConfig();
+	}
+	
 	@Override
 	public void onDisable() {
 		// TODO Auto-generated method stub
 		this.pf.savePlayerConfig();
+		this.saveConfig();
+		this.log.info("=====================================================");
+		this.log.info("[CustomJob]CustomJob插件加载成功,定制插件请联系QQ：1057645164");
+		this.log.info("======================================================");
 	}
 }

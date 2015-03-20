@@ -76,9 +76,12 @@ public class PluginAdminCommand implements CommandExecutor {
 //					return true;
 //			}
 		}
-		if(args[0].equalsIgnoreCase("test")){
-			Player player = (Player)sender;
-			System.out.println(player.getItemInHand().getType().name());
+		
+		if(args[0].equalsIgnoreCase("reload")&&sender.isOp()){
+			plugin.reloadConfig();
+			sender.sendMessage(ChatColor.AQUA+"[CustomJob]config.yml reload");
+			plugin.playerConfigReload();
+			sender.sendMessage(ChatColor.AQUA+"[CustomJob]save.yml reload");
 			return true;
 		}
 		return false;

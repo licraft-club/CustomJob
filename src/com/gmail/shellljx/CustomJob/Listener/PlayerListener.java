@@ -104,8 +104,10 @@ public class PlayerListener implements Listener {
 			String prefix = plugin.getConfig().getString("nick."+jobname);
 			e.setFormat(c+"["+prefix+"]");
 			String pformat = e.getFormat();
+			System.out.println(format);
+			System.out.println(pformat);
 			e.setFormat(pformat+format);
-			e.setFormat(Font.BOLD+e.getFormat());
+			e.setFormat(e.getFormat());
 		}
 	}
 	
