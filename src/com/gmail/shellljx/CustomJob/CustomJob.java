@@ -9,21 +9,29 @@ import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.gmail.shellljx.CustomJob.Listener.PlayerListener;
 import com.gmail.shellljx.CustomJob.Util.ConfigUtil;
+import com.gmail.shellljx.CustomJob.Util.PlayerConfig;
 import com.gmail.shellljx.CustomJob.command.MainCommand;
 import com.gmail.shellljx.CustomJob.command.PluginAdminCommand;
 
 public class CustomJob extends JavaPlugin {
 	
 	private ConfigUtil configUtil;
+	private PlayerConfig pf;
 	private PluginManager pm;
 	public static CustomJob instance;
 	private List<Integer> items = new ArrayList<>();
 	private HashMap<String,List<Integer>> jobMap = new HashMap<>();
+	private HashMap<String,Integer> playerJob = new HashMap<>();
 	public Logger log = Logger.getLogger("CustomJob");
+	private PlayerListener pl = new PlayerListener(this);
+	private FileConfiguration playerConfig = null;
 	
 	
 	@Override
@@ -32,7 +40,10 @@ public class CustomJob extends JavaPlugin {
 		instance = this;
 		configUtil = new ConfigUtil();
 		configUtil.createConfig();
+		pf = new PlayerConfig(this);
+		playerConfig = pf.getPlayerConfig();
 		pm = getServer().getPluginManager();
+		pm.registerEvents(pl, this);
 		this.getCommand("custom").setExecutor(new MainCommand(this));
 		this.getCommand("cadmin").setExecutor(new PluginAdminCommand(this));
 		this.log.info("=====================================================");
@@ -70,9 +81,21 @@ public class CustomJob extends JavaPlugin {
 		}
 		return false;
 	}
+	
+	public boolean isJobItem(int id){
+		for(String key:jobMap.keySet()){
+			if(jobMap.get(key).contains(id))
+				return true;
+		}
+		return false;
+	}
+	
+	public FileConfiguration getPlayerConfig(){
+		return this.playerConfig;
+	}
 	@Override
 	public void onDisable() {
 		// TODO Auto-generated method stub
-		super.onDisable();
+		this.pf.savePlayerConfig();
 	}
 }
