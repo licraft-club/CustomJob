@@ -89,9 +89,11 @@ public class PlayerListener implements Listener {
 		if(!e.hasItem())
 			return;
 		int id = e.getItem().getTypeId();
-		if(plugin.getPlayerConfig().get(player.getName().toString())==null&&plugin.isJobItem(id)){
-			e.setCancelled(true);
-			player.sendMessage(ChatColor.RED+"[CustomJob]你不能使用该自定义职业的装备!请选择职业或者转职");
+		if(!plugin.getPlayerConfig().contains(player.getName().toString())){
+			if(plugin.isJobItem(id)){
+				e.setCancelled(true);
+				player.sendMessage(ChatColor.RED+"[CustomJob]你不能使用该自定义职业的装备!请选择职业或者转职");
+			}
 			return;
 		}
 		if((a==Action.LEFT_CLICK_AIR||a==Action.LEFT_CLICK_BLOCK||a==Action.RIGHT_CLICK_AIR||a==Action.RIGHT_CLICK_BLOCK)){
