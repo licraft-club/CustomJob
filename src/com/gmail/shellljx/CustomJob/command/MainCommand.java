@@ -31,6 +31,7 @@ public class MainCommand implements CommandExecutor {
 			sender.sendMessage(ChatColor.YELLOW+"-----------------.["+ChatColor.RED+this.plugin.getConfig().getString("menu.title")+ChatColor.YELLOW+"].-----------------");
 			sender.sendMessage(ChatColor.AQUA+"作者:shell,QQ:1057645164");
 			sender.sendMessage(ChatColor.AQUA+"/custom trans [职业]  --转换职业");
+			sender.sendMessage(ChatColor.AQUA+"/custom out  --放弃你的职业");
 			sender.sendMessage(ChatColor.AQUA+"/custom help  --查看帮助");
 			sender.sendMessage(ChatColor.AQUA+"/custom help admin  --管理员菜单");
 			sender.sendMessage(ChatColor.YELLOW+"------------------------------------------------------------------");
@@ -45,21 +46,23 @@ public class MainCommand implements CommandExecutor {
 			return true;
 		}
 		
-		if(args[0].equalsIgnoreCase("trans")&&args.length>=2&&sender instanceof Player){
+		if(args[0].equalsIgnoreCase("trans")&&args.length>=2&&sender instanceof Player&&sender.isOp()){
 			Player player = (Player)sender;
 			String job_name = args[1];
 			if(plugin.isJob(job_name)){
 				String old_job = plugin.getPlayerConfig().getString(player.getName().toString());
 				if(old_job!=null){
-					if(old_job.equalsIgnoreCase(args[1])){
-						player.sendMessage(ChatColor.RED+"[CustomJob]你已经是这个职业了，不要重复选择");
-						return true;
-					}
-					//当该玩家已经有了职业，要转职的时候
-					plugin.transJob(player.getName().toString(),job_name);
-					this.clearBP(player, old_job);
-					player.sendMessage(ChatColor.AQUA+"[CustomJob]转职成功，原来职业的装备已清空，你现在的职业是"+ChatColor.YELLOW+plugin.getConfig().getString("nick."+job_name));
+					player.sendMessage(ChatColor.RED+"[CustomJob]重新选择职业之前，请先退出原来的职业,指令/custom out");
 					return true;
+//					if(old_job.equalsIgnoreCase(args[1])){
+//						player.sendMessage(ChatColor.RED+"[CustomJob]你已经是这个职业了，不要重复选择");
+//						return true;
+//					}
+//					//当该玩家已经有了职业，要转职的时候
+//					plugin.transJob(player.getName().toString(),job_name);
+//					this.clearBP(player, old_job);
+//					player.sendMessage(ChatColor.AQUA+"[CustomJob]转职成功，原来职业的装备已清空，你现在的职业是"+ChatColor.YELLOW+plugin.getConfig().getString("nick."+job_name));
+//					return true;
 				}else{//当该玩家没有职业的时候输入这个转职命令,没有必要清空背包
 					plugin.joinAJob(player.getName().toString(),job_name);
 					player.sendMessage(ChatColor.AQUA+"[CustomJob]选择职业成功，你现在的职业是"+ChatColor.YELLOW+plugin.getConfig().getString("nick."+job_name));
@@ -71,48 +74,40 @@ public class MainCommand implements CommandExecutor {
 			}
 		}
 		
-		if(args[0].equalsIgnoreCase("test")){
-			System.out.println("。。。。。。。。。");
+		if(args[0].equalsIgnoreCase("out")&&sender instanceof Player){
 			Player player = (Player)sender;
-			List<ItemStack> wearItem = new ArrayList<>();
-			ItemStack[] items = player.getEquipment().getArmorContents();
-			if(player.getEquipment().getBoots()!=null)
-				wearItem.add(player.getEquipment().getBoots());
-			if(player.getEquipment().getHelmet()!=null)
-				wearItem.add(player.getEquipment().getHelmet());
-			if(player.getEquipment().getChestplate()!=null)
-				wearItem.add(player.getEquipment().getChestplate());
-			if(player.getEquipment().getLeggings()!=null)
-				wearItem.add(player.getEquipment().getLeggings());
-			System.out.println("items"+items.length+"wear"+wearItem.size());
-			for(ItemStack item:items){
-				if(item!=null)
-					System.out.println(item.getType());
+			if(plugin.getPlayerConfig().contains(player.getName().toString())){
+				plugin.clearJob(player.getName().toString());
+				this.clearBP(player);
+				sender.sendMessage(ChatColor.AQUA+"[CustomJob]成功退出职业系统，你不再拥有任何职业");
+				return true;
+			}else{
+				player.sendMessage(ChatColor.RED+"[CustomJob]你现在没有职业，无法退出，请选择职业");
+				return true;
 			}
-			return true;
 		}
-		
+		sender.sendMessage(ChatColor.RED+"[CustomJob]你输入的指令格式错误，或者没有权限!");
 		return false;
 	}
-	
-	public void clearBP(Player player,String old_job){
+	//清空玩家背包里面所有职业装备
+	public void clearBP(Player player){
 		ItemStack[] inventoryItems = player.getInventory().getContents();
 		//清空穿在身上的装备
 		ItemStack boot = player.getEquipment().getBoots();
 		ItemStack chestplate = player.getEquipment().getChestplate();
 		ItemStack legging = player.getEquipment().getLeggings();
 		ItemStack helmet = player.getEquipment().getHelmet();
-		if(boot!=null&&plugin.include(old_job, boot))
+		if(boot!=null&&plugin.isJobItem(boot.getTypeId()))
 			player.getInventory().setBoots(null);
-		if(chestplate!=null&&plugin.include(old_job, chestplate))
+		if(chestplate!=null&&plugin.isJobItem(chestplate.getTypeId()))
 			player.getInventory().setChestplate(null);
-		if(legging!=null&&plugin.include(old_job, legging))
+		if(legging!=null&&plugin.isJobItem(legging.getTypeId()))
 			player.getInventory().setLeggings(null);
-		if(helmet!=null&&plugin.include(old_job, helmet))
+		if(helmet!=null&&plugin.isJobItem(helmet.getTypeId()))
 			player.getInventory().setHelmet(null);
 		//清空背包里的装备
 		for(ItemStack item : inventoryItems){
-			if(item!=null&&plugin.include(old_job,item))
+			if(item!=null&&plugin.isJobItem(item.getTypeId()))
 				player.getInventory().remove(item);
 		}
 	}

@@ -84,6 +84,7 @@ public class PluginAdminCommand implements CommandExecutor {
 			sender.sendMessage(ChatColor.AQUA+"[CustomJob]save.yml reload");
 			return true;
 		}
+		sender.sendMessage(ChatColor.RED+"[CustomJob]你输入的指令格式错误，或者没有权限!");
 		return false;
 	}
 

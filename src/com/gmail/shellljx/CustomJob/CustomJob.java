@@ -126,6 +126,7 @@ public class CustomJob extends JavaPlugin {
 		playerConfig.addDefault(path, job_name);
 		playerConfig.options().copyDefaults(true);
 		pf.savePlayerConfig();
+		pf.reloadPlayerConfig();
 		playerConfig = pf.getPlayerConfig();
 	}
 	
@@ -133,6 +134,15 @@ public class CustomJob extends JavaPlugin {
 		playerConfig.set(path, job_name);
 		playerConfig.options().copyDefaults(true);
 		pf.savePlayerConfig();
+		pf.reloadPlayerConfig();
+		playerConfig = pf.getPlayerConfig();
+	}
+	
+	public void clearJob(String path){
+		playerConfig.set(path, null);
+		playerConfig.options().copyDefaults(true);
+		pf.savePlayerConfig();
+		pf.reloadPlayerConfig();
 		playerConfig = pf.getPlayerConfig();
 	}
 	

@@ -39,6 +39,14 @@ public class PlayerListener implements Listener {
 				return ;
 			}
 			int id = e.getCurrentItem().getTypeId();
+			if(!plugin.getPlayerConfig().contains(player.getName().toString())){
+				if(plugin.isJobItem(id)&&!player.isOp()){
+					e.setCancelled(true);
+					player.closeInventory();
+					player.sendMessage(ChatColor.RED+"[CustomJob]你不能使用该自定义职业的装备!请选择职业或者转职");
+				}
+				return;
+			}
 			boolean is = plugin.getitems("setting."+plugin.getPlayerConfig().getString(player.getName().toString())).contains(id);
 			if(!is&&plugin.isJobItem(id)&&!player.isOp()){
 				e.setCancelled(true);
@@ -52,6 +60,17 @@ public class PlayerListener implements Listener {
 	public void onPickUpEvent(PlayerPickupItemEvent e){
 		Player player = (Player)e.getPlayer();
 		int id = e.getItem().getItemStack().getTypeId();
+		if(!plugin.getPlayerConfig().contains(player.getName().toString())){
+			if(plugin.isJobItem(id)){
+				e.setCancelled(true);
+				nowPickId=id;
+			}
+			if(lastPickId!=nowPickId){
+				player.sendMessage(ChatColor.RED+"[CustomJob]你不能拾取该自定义职业的装备!请选择职业或者转职");
+				lastPickId=id;
+			}
+			return;
+		}
 		boolean is = plugin.getitems("setting."+plugin.getPlayerConfig().getString(player.getName().toString())).contains(id);
 		if(!is&&plugin.isJobItem(id)&&!player.isOp()){
 			e.setCancelled(true);
@@ -67,8 +86,15 @@ public class PlayerListener implements Listener {
 	public void onInteractListener(PlayerInteractEvent e){
 		Player player = e.getPlayer();
 		Action a = e.getAction();
-		if(e.hasItem()&&(a==Action.LEFT_CLICK_AIR||a==Action.LEFT_CLICK_BLOCK||a==Action.RIGHT_CLICK_AIR||a==Action.RIGHT_CLICK_BLOCK)){
-			int id = e.getItem().getTypeId();
+		if(!e.hasItem())
+			return;
+		int id = e.getItem().getTypeId();
+		if(plugin.getPlayerConfig().get(player.getName().toString())==null&&plugin.isJobItem(id)){
+			e.setCancelled(true);
+			player.sendMessage(ChatColor.RED+"[CustomJob]你不能使用该自定义职业的装备!请选择职业或者转职");
+			return;
+		}
+		if((a==Action.LEFT_CLICK_AIR||a==Action.LEFT_CLICK_BLOCK||a==Action.RIGHT_CLICK_AIR||a==Action.RIGHT_CLICK_BLOCK)){
 			boolean is=plugin.getitems("setting."+plugin.getPlayerConfig().getString(player.getName().toString())).contains(id);
 			if(!is&&plugin.isJobItem(id)&&!player.isOp()){
 				e.setCancelled(true);
@@ -85,7 +111,12 @@ public class PlayerListener implements Listener {
 			if(item==null)
 				return;
 			int id = item.getTypeId();
-			System.out.println(player.getName().toString()+id);
+			if(plugin.getPlayerConfig().get(player.getName().toString())==null&&plugin.isJobItem(id)){
+				e.setCancelled(true);
+				player.sendMessage(ChatColor.RED+"[CustomJob]你不能使用该自定义职业的装备造成伤害，请选择职业或者转职!");
+				return;
+			}
+			//System.out.println(player.getName().toString()+id);
 			boolean is = plugin.getitems("setting."+plugin.getPlayerConfig().getString(player.getName().toString())).contains(id);
 			if(!is&&plugin.isJobItem(id)&&!player.isOp()){
 				e.setCancelled(true);
@@ -104,8 +135,8 @@ public class PlayerListener implements Listener {
 			String prefix = plugin.getConfig().getString("nick."+jobname);
 			e.setFormat(c+"["+prefix+"]");
 			String pformat = e.getFormat();
-			System.out.println(format);
-			System.out.println(pformat);
+			//System.out.println(format);
+			//System.out.println(pformat);
 			e.setFormat(pformat+format);
 			e.setFormat(e.getFormat());
 		}
