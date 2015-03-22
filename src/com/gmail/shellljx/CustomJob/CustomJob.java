@@ -45,7 +45,7 @@ public class CustomJob extends JavaPlugin {
 		pm = getServer().getPluginManager();
 		pm.registerEvents(pl, this);
 		this.getCommand("custom").setExecutor(new MainCommand(this));
-		this.getCommand("cadmin").setExecutor(new PluginAdminCommand(this));
+		this.getCommand("cjadmin").setExecutor(new PluginAdminCommand(this));
 		this.log.info("=====================================================");
 		this.log.info("[CustomJob]CustomJob插件加载成功,定制插件请联系QQ：1057645164");
 		this.log.info("======================================================");

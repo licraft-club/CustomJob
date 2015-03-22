@@ -40,9 +40,9 @@ public class MainCommand implements CommandExecutor {
 		
 		if(args[0].equalsIgnoreCase("help")&&args[1].equalsIgnoreCase("admin")){
 			sender.sendMessage(ChatColor.YELLOW+"-----------------.["+ChatColor.RED+this.plugin.getConfig().getString("menu.title")+ChatColor.YELLOW+"].-----------------");
-			sender.sendMessage(ChatColor.AQUA+"/cadmin add [职业]  --添加手里的RPGItem武器到某个职业");
-			sender.sendMessage(ChatColor.AQUA+"/cadmin remove [职业] --从某个职业中移除你手中的RPGItem");
-			sender.sendMessage(ChatColor.AQUA+"/cadmin reload  --重载插件");
+			sender.sendMessage(ChatColor.AQUA+"/cjadmin add [职业]  --添加手里的RPGItem武器到某个职业");
+			sender.sendMessage(ChatColor.AQUA+"/cjadmin remove [职业] --从某个职业中移除你手中的RPGItem");
+			sender.sendMessage(ChatColor.AQUA+"/cjadmin reload  --重载插件");
 			return true;
 		}
 		

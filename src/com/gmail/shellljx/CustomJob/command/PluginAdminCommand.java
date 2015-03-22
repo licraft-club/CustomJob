@@ -31,6 +31,10 @@ public class PluginAdminCommand implements CommandExecutor {
 			RPGItems rpgItems = new RPGItems();
 			ItemStack item = player.getItemInHand();
 			int id = item.getTypeId();
+			if(id==0){
+				sender.sendMessage(ChatColor.RED+"[CustomJob]请在手上拿着你要添加的装备");
+				return true;
+			}
 			if(plugin.createItem("setting."+args[1], id)){
 				player.sendMessage(ChatColor.GREEN+"[CustomJob]成功添加一件RPG武器到"+ChatColor.YELLOW+plugin.getConfig().getString("nick."+args[1])+ChatColor.GREEN+"职业，现在共有"+ChatColor.YELLOW+plugin.getitems("setting."+args[1]).size()+ChatColor.GREEN+"件装备.");
 			}else{
@@ -59,6 +63,10 @@ public class PluginAdminCommand implements CommandExecutor {
 			RPGItems rpgItems = new RPGItems();
 			ItemStack item = player.getItemInHand();
 			int id = item.getTypeId();
+			if(id==0){
+				sender.sendMessage(ChatColor.RED+"[CustomJob]请在手上拿着要删除的装备");
+				return true;
+			}
 			if(plugin.removeItem("setting."+args[1], id)){
 				player.sendMessage(ChatColor.GREEN+"[CustomJob]成功移除该RPG装备，该职业还有"+plugin.getitems("setting."+args[1]).size()+"件RPG装备");
 			}else{
@@ -84,8 +92,10 @@ public class PluginAdminCommand implements CommandExecutor {
 			sender.sendMessage(ChatColor.AQUA+"[CustomJob]save.yml reload");
 			return true;
 		}
-		sender.sendMessage(ChatColor.RED+"[CustomJob]你输入的指令格式错误，或者没有权限!");
-		return false;
+		else{
+			sender.sendMessage(ChatColor.RED+"[CustomJob]你输入的指令格式错误，或者没有权限!");
+			return true;
+		}
 	}
 
 }
