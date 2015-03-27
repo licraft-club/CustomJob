@@ -1,5 +1,8 @@
 package com.gmail.shellljx.CustomJob.command;
 
+import java.io.Console;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -92,9 +95,80 @@ public class PluginAdminCommand implements CommandExecutor {
 			sender.sendMessage(ChatColor.AQUA+"[CustomJob]save.yml reload");
 			return true;
 		}
+		if(args[0].equalsIgnoreCase("trans")){
+			if(args.length==3&&sender.isOp()){
+				for(Player p:Bukkit.getServer().getOnlinePlayers()){
+					if(p.getName().equalsIgnoreCase(args[1])){
+						if(plugin.isJob(args[2])){
+							String old_job = plugin.getPlayerConfig().getString(p.getName().toString());
+							if(old_job!=null){
+								p.sendMessage(ChatColor.RED+"[CustomJob]重新选择职业之前，请先退出原来的职业,指令/custom out");
+								return true;
+							}else{//当该玩家没有职业的时候输入这个转职命令,没有必要清空背包
+								plugin.joinAJob(p.getName().toString(),args[2]);
+								p.sendMessage(ChatColor.AQUA+"[CustomJob]选择职业成功，你现在的职业是"+ChatColor.YELLOW+plugin.getConfig().getString("nick."+args[2]));
+								return true;
+							}
+						}else{
+							sender.sendMessage(ChatColor.RED+"[CustomJob]没有该职业，请重新输入!");
+							return true;
+						}
+					}
+				}
+				System.out.println("[CustomJob]玩家没有在线");
+			}else{
+				sender.sendMessage(ChatColor.RED+"[CustomJob]控制台转职参数错误");
+			}
+			return true;
+		}
+		if(args[0].equalsIgnoreCase("out")){
+			if(args.length==2&&sender.isOp()){
+				for(Player p:Bukkit.getServer().getOnlinePlayers()){
+					if(p.getName().equalsIgnoreCase(args[1])){
+						if(plugin.getPlayerConfig().contains(p.getName().toString())){
+							plugin.clearJob(p.getName().toString());
+							this.clearBP(p);
+							p.sendMessage(ChatColor.AQUA+"[CustomJob]成功退出职业系统，你不再拥有任何职业");
+							return true;
+						}else{
+							p.sendMessage(ChatColor.RED+"[CustomJob]你现在没有职业，无法退出，请选择职业");
+							return true;
+						}
+					}
+				}
+				System.out.println("[CustomJob]该玩家不在线");
+				return true;
+			}else{
+				sender.sendMessage("[CustomJob]控制台参数错误");
+				return true;
+			}
+		}
 		else{
 			sender.sendMessage(ChatColor.RED+"[CustomJob]你输入的指令格式错误，或者没有权限!");
 			return true;
+		}
+	}
+	
+	//清空玩家背包里面所有职业装备
+	public void clearBP(Player player){
+		ItemStack[] inventoryItems = player.getInventory().getContents();
+		//清空穿在身上的装备
+		ItemStack boot = player.getEquipment().getBoots();
+		ItemStack chestplate = player.getEquipment().getChestplate();
+		ItemStack legging = player.getEquipment().getLeggings();
+		ItemStack helmet = player.getEquipment().getHelmet();
+		if(boot!=null&&plugin.isJobItem(boot.getTypeId()))
+			player.getInventory().setBoots(null);
+		if(chestplate!=null&&plugin.isJobItem(chestplate.getTypeId()))
+			player.getInventory().setChestplate(null);
+		if(legging!=null&&plugin.isJobItem(legging.getTypeId()))
+			player.getInventory().setLeggings(null);
+		if(helmet!=null&&plugin.isJobItem(helmet.getTypeId()))
+			player.getInventory().setHelmet(null);
+		//清空背包里的装备
+		for(ItemStack item : inventoryItems){
+			if(item!=null&&plugin.isJobItem(item.getTypeId()))
+				player.getInventory().remove(item);
 		}
 	}
 

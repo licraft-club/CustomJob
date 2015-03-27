@@ -42,6 +42,8 @@ public class MainCommand implements CommandExecutor {
 			sender.sendMessage(ChatColor.YELLOW+"-----------------.["+ChatColor.RED+this.plugin.getConfig().getString("menu.title")+ChatColor.YELLOW+"].-----------------");
 			sender.sendMessage(ChatColor.AQUA+"/cjadmin add [职业]  --添加手里的RPGItem武器到某个职业");
 			sender.sendMessage(ChatColor.AQUA+"/cjadmin remove [职业] --从某个职业中移除你手中的RPGItem");
+			sender.sendMessage(ChatColor.AQUA+"/cjadmin trans [玩家] [职业] --将某玩家转职到某个职业(先退出职业)");
+			sender.sendMessage(ChatColor.AQUA+"/cjadmin out [玩家] --将某玩家退出所有职业");
 			sender.sendMessage(ChatColor.AQUA+"/cjadmin reload  --重载插件");
 			return true;
 		}
