@@ -1,6 +1,6 @@
 main: com.gmail.shellljx.CustomJob.CustomJob
 name: CustomJob
-version: 1.2.3
+version: 1.3.1
 author: shell
 commands:
   custom:

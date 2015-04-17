@@ -25,3 +25,7 @@ v1.3.0 2015/3/27
 
 1. 增加指令/cjadmin trans [player] [job] 对BossShop插件的兼容
 2. 增加指令/cjadmin out [player] 对BossShop插件的兼容
+
+v1.3.1 2015/4/17
+
+1. 增加退出职业要判断是否是op

@@ -121,7 +121,7 @@ public class PluginAdminCommand implements CommandExecutor {
 			}
 			return true;
 		}
-		if(args[0].equalsIgnoreCase("out")){
+		if(args[0].equalsIgnoreCase("out")&&sender.isOp()){
 			if(args.length==2&&sender.isOp()){
 				for(Player p:Bukkit.getServer().getOnlinePlayers()){
 					if(p.getName().equalsIgnoreCase(args[1])){
