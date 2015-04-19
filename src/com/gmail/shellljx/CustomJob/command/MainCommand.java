@@ -54,6 +54,18 @@ public class MainCommand implements CommandExecutor {
 			if(plugin.isJob(job_name)){
 				String old_job = plugin.getPlayerConfig().getString(player.getName().toString());
 				if(old_job!=null){
+					//转职到第二职业，不用退出父职业，直接转入
+					if(job_name.contains("sub")){
+						if(job_name.contains(old_job)){
+							this.clearBP(player);
+							plugin.joinAJob(player.getName().toString(), job_name);
+							player.sendMessage(ChatColor.AQUA+"[CustomJob]你成功转入职业"+ChatColor.YELLOW+plugin.getConfig().getString("nick."+old_job)+ChatColor.AQUA+"的子职业"+ChatColor.YELLOW+plugin.getConfig().getString("nick."+job_name));
+							return true;
+						}else{
+							player.sendMessage(ChatColor.RED+"[CustomJob]该职业不是你现在职业的子职业，所以不能转入");
+							return true;
+						}
+					}
 					player.sendMessage(ChatColor.RED+"[CustomJob]重新选择职业之前，请先退出原来的职业,指令/custom out");
 					return true;
 //					if(old_job.equalsIgnoreCase(args[1])){
@@ -66,6 +78,11 @@ public class MainCommand implements CommandExecutor {
 //					player.sendMessage(ChatColor.AQUA+"[CustomJob]转职成功，原来职业的装备已清空，你现在的职业是"+ChatColor.YELLOW+plugin.getConfig().getString("nick."+job_name));
 //					return true;
 				}else{//当该玩家没有职业的时候输入这个转职命令,没有必要清空背包
+					//当玩家没有职业的时候不能选择第二职业
+					if(job_name.contains("sub")){
+						player.sendMessage(ChatColor.RED+"[CustomJob]你现在没有职业，不能进行转职第二职业的操作");
+						return true;
+					}
 					plugin.joinAJob(player.getName().toString(),job_name);
 					player.sendMessage(ChatColor.AQUA+"[CustomJob]选择职业成功，你现在的职业是"+ChatColor.YELLOW+plugin.getConfig().getString("nick."+job_name));
 					return true;

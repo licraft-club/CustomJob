@@ -57,6 +57,12 @@ public class CustomJob extends JavaPlugin {
 		jobMap.put("setting.job-2", this.getConfig().getIntegerList("setting.job-2"));
 		jobMap.put("setting.job-3", this.getConfig().getIntegerList("setting.job-3"));
 		jobMap.put("setting.job-4", this.getConfig().getIntegerList("setting.job-4"));
+		jobMap.put("setting.job-5", this.getConfig().getIntegerList("setting.job-5"));
+		jobMap.put("setting.sub-job-1",this.getConfig().getIntegerList("setting.sub-job-1"));
+		jobMap.put("setting.sub-job-2",this.getConfig().getIntegerList("setting.sub-job-2"));
+		jobMap.put("setting.sub-job-3",this.getConfig().getIntegerList("setting.sub-job-3"));
+		jobMap.put("setting.sub-job-4",this.getConfig().getIntegerList("setting.sub-job-4"));
+		jobMap.put("setting.sub-job-5",this.getConfig().getIntegerList("setting.sub-job-5"));
 	}
 	
 	public List<Integer> getitems(String job){
